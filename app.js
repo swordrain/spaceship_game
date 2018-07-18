@@ -4,6 +4,8 @@ class AlienGame {
         this.BULLETS_MOVESTEP = 3;
         this.BULLETS_LENGTH = 5;
         this.BULLETS_WIDTH = 3;
+        this.BULLETS_COUNT = 5;
+        this.spaceshipMove = 0;
         this.canvas = canvasDom;
         this.context = this.canvas.getContext("2d");
         this.spaceship = {
@@ -40,26 +42,16 @@ class AlienGame {
         })]).then(() => {
 
             window.addEventListener("keydown", e => {
-                console.log(e)
                 switch (e.code) {
-                    
-                    case "ArrowRight":
-                        if (this.spaceship.location.x + this.spaceship.image.width + this.SPACESHIP_MOVESTEP >= this.canvas.width) {
-                            this.spaceship.location.x = this.canvas.width - this.spaceship.image.width;
-                        } else {
-                            this.spaceship.location.x += this.SPACESHIP_MOVESTEP;
-                        }
 
+                    case "ArrowRight":
+                        this.spaceshipMove = this.SPACESHIP_MOVESTEP;
                         break;
                     case "ArrowLeft":
-                        if (this.spaceship.location.x - this.SPACESHIP_MOVESTEP <= 0) {
-                            this.spaceship.location.x = 0;
-                        } else {
-                            this.spaceship.location.x -= this.SPACESHIP_MOVESTEP;
-                        }
+                        this.spaceshipMove = -this.SPACESHIP_MOVESTEP;
                         break;
                     case "Space":
-                        if(this.bullets.length < 3){
+                        if (this.bullets.length < this.BULLETS_COUNT) {
                             this.bullets.push({
                                 x: this.spaceship.location.x + this.spaceship.image.width / 2,
                                 y: this.spaceship.location.y
@@ -69,7 +61,17 @@ class AlienGame {
                     default:
                         break;
                 }
-            })
+            });
+            window.addEventListener("keyup", e => {
+                switch (e.code) {
+                    case "ArrowRight":
+                    case "ArrowLeft":
+                        this.spaceshipMove = 0;
+                        break;
+                    default:
+                        break;
+                }
+            });
             this.draw();
         })
 
@@ -98,6 +100,14 @@ class AlienGame {
 
     drawSpaceship() {
         this.context.save();
+        if (this.spaceship.location.x + this.spaceshipMove < 0) {
+            this.spaceship.location.x = 0
+        } else if (this.spaceship.location.x + this.spaceshipMove + this.spaceship.image.width > this.canvas.width) {
+            this.spaceship.location.x = this.canvas.width - this.spaceship.image.width
+        } else {
+            this.spaceship.location.x += this.spaceshipMove;
+        }
+
         this.context.drawImage(this.spaceship.image, this.spaceship.location.x, this.spaceship.location.y);
         this.context.restore();
     }
