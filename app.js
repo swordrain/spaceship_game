@@ -146,6 +146,15 @@ class AlienGame {
     drawAliens() {
         this.context.save();
         this.aliens.forEach(a => {
+            a.x += Math.floor(Math.random() * 5 - 2);
+            if (a.x < 0) {
+                a.x = 0;
+            }
+            a.y += Math.floor(Math.random() * 5 - 2);
+            if (a.y < 0) {
+                a.y = 0
+            }
+
             this.context.drawImage(this.alien.image, a.x, a.y);
         });
 
