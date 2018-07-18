@@ -1,3 +1,10 @@
+class Alien {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
 class AlienGame {
     constructor(canvasDom) {
         this.SPACESHIP_MOVESTEP = 8;
@@ -15,6 +22,7 @@ class AlienGame {
             image: new Image()
         };
         this.bullets = [];
+        this.aliens = [new Alien(30, 30)];
         console.log(this.context);
     }
 
@@ -84,6 +92,7 @@ class AlienGame {
             this.drawBackground();
             this.drawSpaceship();
             this.drawBullets();
+            this.drawAliens();
 
             now = Date.now();
             this.draw();
@@ -123,6 +132,15 @@ class AlienGame {
             b.y -= this.BULLETS_MOVESTEP;
             this.context.fillRect(b.x - this.BULLETS_WIDTH / 2, b.y - this.BULLETS_LENGTH, this.BULLETS_WIDTH, this.BULLETS_LENGTH);
         });
+        this.context.restore();
+    }
+
+    drawAliens() {
+        this.context.save();
+        this.aliens.forEach(a => {
+            this.context.drawImage(this.alien.image, a.x, a.y);
+        });
+
         this.context.restore();
     }
 }
