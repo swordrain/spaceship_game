@@ -12,6 +12,7 @@ class AlienGame {
         this.BULLETS_LENGTH = 5;
         this.BULLETS_WIDTH = 3;
         this.BULLETS_COUNT = 5;
+        this.ALIEN_COUNT = 5;
         this.spaceshipMove = 0;
         this.canvas = canvasDom;
         this.context = this.canvas.getContext("2d");
@@ -22,7 +23,7 @@ class AlienGame {
             image: new Image()
         };
         this.bullets = [];
-        this.aliens = [new Alien(30, 30)];
+        this.aliens = [];
         console.log(this.context);
     }
 
@@ -80,6 +81,13 @@ class AlienGame {
                         break;
                 }
             });
+
+            Array.from({ length: this.ALIEN_COUNT }).forEach(() => {
+                this.aliens.push(new Alien(Math.floor((this.canvas.width - this.spaceship.image.width / 2) * Math.random()), Math.floor(this.canvas.height / 2 * Math.random())))
+            });
+
+            console.log(this.aliens);
+
             this.draw();
         })
 
