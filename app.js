@@ -100,6 +100,7 @@ class AlienGame {
             this.drawBackground();
             this.drawSpaceship();
             this.drawBullets();
+            this.checkCollide();
             this.drawAliens();
 
             now = Date.now();
@@ -159,6 +160,27 @@ class AlienGame {
         });
 
         this.context.restore();
+    }
+
+    checkCollide() {
+        const alienFilterIndex = new Set();
+        const bulletFilterIndex = new Set();
+        this.aliens.forEach((a, aIndex) => {
+            this.bullets.forEach((b, bIndex) => {
+                if ((b.y + this.BULLETS_LENGTH) <= (a.y + this.alien.image.height) && b.y >= a.y && (b.x >= a.x && (b.x + this.BULLETS_WIDTH) <= (a.x + this.alien.image.width))) {
+                    alienFilterIndex.add(aIndex);
+                    bulletFilterIndex.add(bIndex);
+                    console.log(alienFilterIndex, bulletFilterIndex);
+                }
+            })
+        });
+
+        this.aliens = this.aliens.filter((_, aIndex) => {
+            return !alienFilterIndex.has(aIndex);
+        });
+        this.bullets = this.bullets.filter((_, bIndex) => {
+            return !bulletFilterIndex.has(bIndex);
+        });
     }
 }
 
