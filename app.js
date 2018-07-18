@@ -1,6 +1,9 @@
 class AlienGame {
     constructor(canvasDom) {
         this.SPACESHIP_MOVESTEP = 8;
+        this.BULLETS_MOVESTEP = 3;
+        this.BULLETS_LENGTH = 5;
+        this.BULLETS_WIDTH = 3;
         this.canvas = canvasDom;
         this.context = this.canvas.getContext("2d");
         this.spaceship = {
@@ -9,6 +12,7 @@ class AlienGame {
         this.alien = {
             image: new Image()
         };
+        this.bullets = [];
         console.log(this.context);
     }
 
@@ -36,7 +40,9 @@ class AlienGame {
         })]).then(() => {
 
             window.addEventListener("keydown", e => {
+                console.log(e)
                 switch (e.code) {
+                    
                     case "ArrowRight":
                         if (this.spaceship.location.x + this.spaceship.image.width + this.SPACESHIP_MOVESTEP >= this.canvas.width) {
                             this.spaceship.location.x = this.canvas.width - this.spaceship.image.width;
@@ -52,6 +58,14 @@ class AlienGame {
                             this.spaceship.location.x -= this.SPACESHIP_MOVESTEP;
                         }
                         break;
+                    case "Space":
+                        if(this.bullets.length < 3){
+                            this.bullets.push({
+                                x: this.spaceship.location.x + this.spaceship.image.width / 2,
+                                y: this.spaceship.location.y
+                            });
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -62,12 +76,12 @@ class AlienGame {
     }
 
     draw() {
-        console.log(this)
         let now = Date.now();
         requestAnimationFrame(() => {
             this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.drawBackground();
             this.drawSpaceship();
+            this.drawBullets();
 
             now = Date.now();
             this.draw();
@@ -85,6 +99,20 @@ class AlienGame {
     drawSpaceship() {
         this.context.save();
         this.context.drawImage(this.spaceship.image, this.spaceship.location.x, this.spaceship.location.y);
+        this.context.restore();
+    }
+
+    drawBullets() {
+        this.context.save();
+        this.context.fillStyle = "black";
+
+        this.bullets = this.bullets.filter(b => {
+            return b.y - this.BULLETS_LENGTH > 0;
+        });
+        this.bullets.forEach(b => {
+            b.y -= this.BULLETS_MOVESTEP;
+            this.context.fillRect(b.x - this.BULLETS_WIDTH / 2, b.y - this.BULLETS_LENGTH, this.BULLETS_WIDTH, this.BULLETS_LENGTH);
+        });
         this.context.restore();
     }
 }
